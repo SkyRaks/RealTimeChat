@@ -11,7 +11,7 @@ class Profile(models.Model):
     info = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self(self.user)
+        return str(self.user)
 
     @property
     def name(self):
@@ -26,5 +26,6 @@ class Profile(models.Model):
         try:
             avatar = self.image.url
         except:
+            # default avatar
             avatar = static('images/avatar.svg')
         return avatar
