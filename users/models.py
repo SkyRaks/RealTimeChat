@@ -4,7 +4,6 @@ from django.templatetags.static import static
 
 # Create your models here.
 class Profile(models.Model):
-    # created_at = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)
     displayname = models.CharField(max_length=20, null=True, blank=True)

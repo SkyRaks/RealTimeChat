@@ -39,10 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_cleanup.apps.CleanupConfig',
-    'django_htmx',
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
+
+    # Optional -- requires install using `django-allauth[socialaccount]
+    'allauth.socialaccount',
 
     'home',
     'users',
@@ -56,9 +57,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+]
 
-    'allauth.account.middleware.AccountMiddleware',
-    'django_htmx.middleware.HtmxMiddleware',
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'chat.urls'
@@ -77,6 +84,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'chat.wsgi.application'
 
@@ -129,7 +137,19 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+# EMAIL_BACKEND = 'django.core.mail.backend.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+
