@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import *
@@ -55,24 +56,40 @@ def profile_email_change(request):
                 return redirect('profile-settings')
 
             form.save()
-
-            email_obj, created = EmailAddress.objects.get_or_create(
-                user=request.user,
-                email=email,
-                defaults={'primary': True}
-            )
-
-            # Mark it unverified (in case user changed email)
-            email_obj.verified = False
-            email_obj.save()
-
-            # Send confirmation email
-            email_obj.send_confirmation(request)
-
+            send_email_confirmation(request, email)
             return redirect('profile-settings')
         else:
             messages.warning(request, "form is not valid")
             return redirect('profile-settings')
 
     return redirect('home')
+
+def send_email_confirmation(request, email):
+    email_obj, created = EmailAddress.objects.get_or_create(
+        user=request.user,
+        email=email,
+        defaults={'primary': True}
+    )
+
+    # Mark it unverified (in case user changed email)
+    email_obj.verified = False
+    email_obj.save()
+
+    # Send confirmation email
+    email_obj.send_confirmation(request)
+
+@login_required
+def profile_email_verify(request):
+    send_email_confirmation(request, request.user.email)
+    return redirect('profile-settings')
+
+def profile_delete_view(request):
+    user = request.user
+    if request.method == 'POST':
+        logout(request)
+        user.delete()
+        messages.success(request, 'Account deleted, how sad...(no)')
+        return redirect('home')
+
+    return render(request, 'users/profile_delete.html')
 
