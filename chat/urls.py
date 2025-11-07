@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from home.views import *
+from rtchat.views import *
 from users.views import profile_view
 from django.conf.urls.static import static
 from django.conf import settings
@@ -24,7 +25,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('', home_view, name='home'),
+    path('', include('rtchat.urls')),
     path('profile/', include('users.urls')),
     path('@<username>/', profile_view, name='profile'),
 ]
