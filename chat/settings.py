@@ -95,15 +95,18 @@ TEMPLATES = [
 # ASGI Configuration
 ASGI_APPLICATION = 'chat.asgi.application'
 
-# Channel Layer Configuration
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('127.0.0.1', 6379)],
-#         },
-#     },
-# }
+# Channel Layer Configuration for other users to see messages
+CHANNEL_LAYERS = {
+    'default': {
+        # only for development
+        "BACKEND": 'channels.layers.InMemoryChannelLayer',
+        # for production
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        # 'CONFIG': {
+        #     "hosts": [('127.0.0.1', 6379)],
+        # },
+    },
+}
 
 
 # Database
